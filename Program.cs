@@ -1,4 +1,4 @@
-// This enum contains a list of the possible directions.
+﻿// This enum contains a list of the possible directions.
 enum Direction
 {
     up,
@@ -13,10 +13,32 @@ class Vector
     public int X; // X co-ordinate/value
     public int Y; // Y co-ordinate/value
 
+    // Vector class constructer when the co-ordinates are given.
     public Vector(int X, int Y)
     {
         this.X = X;
         this.Y = Y;
+    }
+
+    // Vector class constructor when another Vector instance is given.
+    public Vector(Vector anotherVector)
+    {
+        this.X = anotherVector.X;
+        this.Y = anotherVector.Y;
+    }
+
+    // This function compare two given vectors.
+    // If the co-ordinates are same, it returns true, and if the co-ordinates are different, it returns false.
+    public static bool compareTwoVectors(Vector A, Vector B)
+    {
+        if (A.X == B.X && A.Y == B.Y)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
@@ -40,6 +62,7 @@ class Snake
             snakeBody.Add(temp);
         }
     }
+
 }
 
 
@@ -184,7 +207,7 @@ class Game
     // This function updates the player's position and stuffs.
     public static void playerMovement()
     {
-        Vector formerHeadPosition = new Vector(player.headPosition.X, player.headPosition.Y); // Stores the current position of snake's head as it will be updated afterwards.
+        Vector formerHeadPosition = new Vector(player.headPosition); // Stores the current position of snake's head as it will be updated afterwards.
 
         // The following switch case statements updates the position of the snake's head.
         switch (player.direction)
@@ -215,12 +238,12 @@ class Game
 
 
         // The following line of code updates the snake's body position.
-        Vector[] temp = player.snakeBody.ToArray();
+        Vector[] formerSnakeBody = player.snakeBody.ToArray();
         player.snakeBody.Clear();
         player.snakeBody.Add(formerHeadPosition);
         for (int i = 0; i < player.snakeSize - 1; i++)
         {
-            Vector tempVector = new Vector(temp[i].X, temp[i].Y);
+            Vector tempVector = new Vector(formerSnakeBody[i]);
             player.snakeBody.Add(tempVector);
         }
 
@@ -233,11 +256,7 @@ class Game
     {
         foreach (Vector temp in player.snakeBody)
         {
-            int headPosX = player.headPosition.X;
-            int headPosY = player.headPosition.Y;
-            int bodyPosX = temp.X;
-            int bodyPosY = temp.Y;
-            if (headPosX == bodyPosX && headPosY == bodyPosY)
+            if (Vector.compareTwoVectors(temp, player.headPosition))
             {
                 gameOver = true;
             }
@@ -249,13 +268,13 @@ class Game
     {
     redo:
         Food tempFood = new Food();
-        if (tempFood.foodPos.X == player.headPosition.X && tempFood.foodPos.Y == player.headPosition.Y)
+        if (Vector.compareTwoVectors(tempFood.foodPos, player.headPosition))
         {
             goto redo;
         }
         foreach (Vector tempVector in player.snakeBody)
         {
-            if (tempFood.foodPos.X == tempVector.X && tempFood.foodPos.Y == tempVector.Y)
+            if (Vector.compareTwoVectors(tempFood.foodPos, player.headPosition))
             {
                 goto redo;
             }
@@ -267,7 +286,7 @@ class Game
     // This function updates the score if food is eaten.
     public static void updateScore()
     {
-        if(player.headPosition.X == food.foodPos.X && player.headPosition.Y == food.foodPos.Y)
+        if (Vector.compareTwoVectors(food.foodPos, player.headPosition))
         {
             score++; // Updates the score.
             player.snakeSize++; // Increases the snake's size.
