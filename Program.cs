@@ -1,4 +1,4 @@
-﻿// This enum contains a list of the possible directions.
+// This enum contains a list of the possible directions.
 enum Direction
 {
     up,
@@ -27,9 +27,8 @@ class Vector
         this.Y = anotherVector.Y;
     }
 
-    // This function compare two given vectors.
-    // If the co-ordinates are same, it returns true, and if the co-ordinates are different, it returns false.
-    public static bool compareTwoVectors(Vector A, Vector B)
+    // Operator overloading to compare if two Vector instance are equal.
+    public static bool operator ==(Vector A, Vector B)
     {
         if (A.X == B.X && A.Y == B.Y)
         {
@@ -40,6 +39,18 @@ class Vector
             return false;
         }
     }
+    public static bool operator !=(Vector A, Vector B)
+    {
+        if (A.X == B.X && A.Y == B.Y)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
 }
 
 // This class contains the properties of snake.
@@ -256,7 +267,7 @@ class Game
     {
         foreach (Vector temp in player.snakeBody)
         {
-            if (Vector.compareTwoVectors(temp, player.headPosition))
+            if (temp == player.headPosition)
             {
                 gameOver = true;
             }
@@ -268,13 +279,13 @@ class Game
     {
     redo:
         Food tempFood = new Food();
-        if (Vector.compareTwoVectors(tempFood.foodPos, player.headPosition))
+        if (tempFood.foodPos == player.headPosition)
         {
             goto redo;
         }
         foreach (Vector tempVector in player.snakeBody)
         {
-            if (Vector.compareTwoVectors(tempFood.foodPos, player.headPosition))
+            if (tempFood.foodPos == tempVector)
             {
                 goto redo;
             }
@@ -286,7 +297,7 @@ class Game
     // This function updates the score if food is eaten.
     public static void updateScore()
     {
-        if (Vector.compareTwoVectors(food.foodPos, player.headPosition))
+        if (food.foodPos == player.headPosition)
         {
             score++; // Updates the score.
             player.snakeSize++; // Increases the snake's size.
