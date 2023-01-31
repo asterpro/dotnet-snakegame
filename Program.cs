@@ -162,6 +162,9 @@ class Game
                         player.direction = Direction.right;
                     }
                     break;
+                case ConsoleKey.Escape:
+                    gameOver = true;
+                    break;
             }
         }
     }
